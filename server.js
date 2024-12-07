@@ -28,21 +28,18 @@ db.connect((err) => {
   console.log("Connected to MySQL database.");
 });
 
-// Route to get all available time slots and their remaining seats
-// This endpoint should fetch all unique time slots and their remaining seats
+
 app.get('/timeslots', (req, res) => {
-  const query = `
-    SELECT time_slot, seats_remaining
-    FROM time_slots
-    ORDER BY time_slot;`;  // Ensure time slots are ordered
-  db.query(query, (err, result) => {
+  // Retrieve available time slots from the database and send it as a response
+  db.query('SELECT * FROM time_slots', (err, results) => {
     if (err) {
-      console.error("Error retrieving time slots:", err);
-      return res.status(500).json({ error: "Database query failed" });
+      return res.status(500).json({ error: 'Error fetching time slots' });
     }
-    res.status(200).json(result);  // Sends time slots to the frontend
+    res.json(results);
   });
 });
+
+
 
 // Route to register a student
 app.post("/register", (req, res) => {

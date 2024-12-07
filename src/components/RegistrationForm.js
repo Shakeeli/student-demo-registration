@@ -30,18 +30,49 @@ const RegistrationForm = () => {
 
     // Fetch available time slots when the component mounts
     useEffect(() => {
-        axios.get('http://localhost:5001/timeslots')
-            .then(response => {
-                setTimeSlots(response.data);  // Update state with the time slots
-            })
-            .catch(error => {
-                console.error('Error fetching time slots:', error);
-                setError('Error fetching time slots');
-            });
+  axios.get('http://localhost:5001/timeslots')
+    .then(response => {
+        setTimeSlots(response.data);  // Update state with time slots
+    })
+    .catch(error => {
+        console.error('Error fetching time slots:', error);
+        setError('Error fetching time slots');
+    });
+
     }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Validation logic
+        const nameRegex = /^[A-Za-z]+$/;
+        const idRegex = /^\d{8}$/;
+        const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
+
+        // Validate First and Last Name
+        if (!nameRegex.test(firstName) || !nameRegex.test(lastName)) {
+            setError('First and Last Name must contain only alphabetic characters.');
+            return;
+        }
+
+        // Validate Student ID
+        if (!idRegex.test(studentId)) {
+            setError('Student ID must be exactly 8 digits.');
+            return;
+        }
+
+        // Validate Email
+        if (!emailRegex.test(email)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+
+        // Validate Phone Number
+        if (!phoneRegex.test(phone)) {
+            setError('Phone number must be in the format 999-999-9999.');
+            return;
+        }
 
         const data = {
             student_id: studentId,
@@ -182,6 +213,15 @@ const RegistrationForm = () => {
                         style={{ marginTop: '30px' }}
                     >
                         Submit
+                    </Button>
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="secondary"
+                        style={{ marginTop: '15px' }}
+                        onClick={() => navigate('/students')}
+                    >
+                        View Registered Students
                     </Button>
                 </form>
             </Box>
